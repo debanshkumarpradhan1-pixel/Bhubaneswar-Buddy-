@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bhubaneswar Buddy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--bg:#e9f0f5;--card:#fff;--ink:#0f2a3d;--mute:#5a7183;--line:#c9d6e0;--teal:#0e8f83;--mango:#ffb400;--chilli:#d6402b;--on-mango:#0f2a3d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1a26;--card:#132a3b;--ink:#e8f1f7;--mute:#8fa8ba;--line:#26425a;--teal:#3cc4b6;--chilli:#ff7b66}}
+:root[data-theme="dark"]{--bg:#0b1a26;--card:#132a3b;--ink:#e8f1f7;--mute:#8fa8ba;--line:#26425a;--teal:#3cc4b6;--chilli:#ff7b66}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Bricolage Grotesque",system-ui,sans-serif;padding-bottom:84px}
+header{background:#0f2a3d;color:#e9f0f5;padding:22px 18px 40px}
+header h1{margin:0;font-size:clamp(34px,9vw,56px);line-height:.95;font-weight:800;letter-spacing:-.02em}
+header h1 span{display:inline-block;background:var(--mango);color:var(--on-mango);padding:0 10px;border-radius:6px;transform:rotate(-2deg)}
+header p{margin:10px 0 0;max-width:46ch;color:#b9cddb}
+.stripe{height:10px;background:repeating-linear-gradient(90deg,var(--mango) 0 22px,#0f2a3d 22px 44px);margin-top:-10px}
+main{max-width:720px;margin:0 auto;padding:18px}
+section{display:none}section.on{display:block}
+h2{font-size:24px;margin:6px 0 4px}.sub{color:var(--mute);margin:0 0 16px}
+label{display:block;font-weight:600;font-size:14px;margin:12px 0 4px}
+select,input[type=text],input[type=number]{width:100%;padding:12px;border:2px solid var(--ink);border-radius:10px;background:var(--card);color:var(--ink);font:inherit}
+input[type=range]{width:100%}button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--mango);outline-offset:2px}
+.go{margin-top:16px;width:100%;padding:14px;border:0;border-radius:10px;background:var(--mango);color:var(--on-mango);font-weight:800;font-size:17px}
+.swap{border:2px solid var(--ink);background:var(--card);color:var(--ink);border-radius:20px;padding:4px 12px;margin-top:10px;font-weight:600}
+.ticket{background:var(--card);border:2px solid var(--ink);border-radius:14px;margin-top:16px;padding:16px 18px;
+-webkit-mask:radial-gradient(circle 10px at 0 62px,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 10px at 100% 62px,#0000 98%,#000) right/51% 100% no-repeat;
+mask:radial-gradient(circle 10px at 0 62px,#0000 98%,#000) left/51% 100% no-repeat,radial-gradient(circle 10px at 100% 62px,#0000 98%,#000) right/51% 100% no-repeat}
+.ticket .row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-height:44px}
+.no{display:inline-block;background:#0f2a3d;color:#e9f0f5;font-weight:800;font-size:24px;padding:2px 12px;border-radius:8px}
+.stubline{border-top:2px dashed var(--line);margin:14px -18px 10px}
+.stops{margin:0;padding:0;list-style:none}
+.stops li{position:relative;padding:2px 0 2px 22px;color:var(--mute)}
+.stops li::before{content:"";position:absolute;left:4px;top:11px;width:9px;height:9px;border-radius:50%;background:var(--line)}
+.stops li.k{color:var(--ink);font-weight:600}.stops li.k::before{background:var(--teal)}
+.note{font-size:13px;color:var(--mute);margin-top:10px}.note a,.lnk{color:var(--teal);font-weight:600}
+.warn{background:color-mix(in srgb,var(--mango) 25%,transparent);border-radius:10px;padding:10px 12px;font-size:13px;margin-top:14px}
+#map{height:300px;border:2px solid var(--ink);border-radius:14px;background:var(--line);margin-bottom:8px}
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-tile-container,.leaflet-map-pane svg{position:absolute;left:0;top:0}
+.leaflet-container{overflow:hidden;position:relative;touch-action:none;-webkit-tap-highlight-color:transparent}
+.leaflet-tile{width:256px;height:256px;max-width:none!important;max-height:none!important;user-select:none}
+.leaflet-map-pane svg{max-width:none!important}.leaflet-tile-pane{z-index:200}.leaflet-overlay-pane{z-index:400}.leaflet-marker-pane{z-index:600}
+.leaflet-marker-icon{pointer-events:auto}.leaflet-zoom-animated{transform-origin:0 0}
+.lbl{background:none;border:0;white-space:nowrap}
+.lbl b{display:inline-block;transform:translate(10px,-8px);font:600 11px "Bricolage Grotesque",system-ui,sans-serif;color:#0f2a3d;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff;cursor:pointer}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin:8px 0}
+.chip{flex:none;border:2px solid var(--ink);background:var(--card);color:var(--ink);border-radius:20px;padding:6px 14px;font-weight:600}
+.chip[aria-pressed=true]{background:#0f2a3d;color:#e9f0f5}
+.spot{background:var(--card);border-left:6px solid var(--teal);border-radius:10px;padding:12px 14px;margin-bottom:10px;display:grid;grid-template-columns:1fr auto;gap:2px 12px}
+.spot.mine{border-left-color:var(--mango)}.spot b{font-size:17px}.price{font-weight:800;color:var(--chilli);text-align:right}
+.spot small{color:var(--mute);grid-column:1/-1}.spot button{grid-column:1/-1;justify-self:start;background:none;border:0;color:var(--chilli);padding:0;font-size:13px}
+details{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:12px 14px;margin-top:14px}summary{font-weight:800;cursor:pointer}
+.gem{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:14px;margin-bottom:12px}
+.gem h3{margin:2px 0;font-size:19px}.tag{display:inline-block;background:var(--mango);color:var(--on-mango);font-size:12px;font-weight:800;padding:1px 8px;border-radius:6px}
+.total{background:#0f2a3d;color:#e9f0f5;border-radius:14px;padding:18px;margin-top:16px}
+.total .big{font-size:38px;font-weight:800;line-height:1.1}
+.bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:14px 0 8px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:13px}.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--ink);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{background:none;border:0;color:var(--mute);padding:10px 2px 8px;font-size:12px;font-weight:600;min-height:56px}
+nav button span{display:block;font-size:22px;line-height:1.1}
+nav button[aria-selected=true]{color:var(--ink);box-shadow:inset 0 4px 0 var(--mango)}
+footer{max-width:720px;margin:10px auto 0;padding:0 18px;color:var(--mute);font-size:13px}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+</head>
+<body>
+<header><h1>Bhubaneswar<br><span>Buddy</span></h1>
+<p>Bus lines, student food, PG budgets and quiet corners of the city, for everyone new here.</p></header>
+<div class="stripe"></div>
+<main>
+<section id="bus" class="on">
+<h2>Mo Bus route finder</h2>
+<p class="sub">Mo Bus is now called Ama Bus. Pick where you are and where you’re going.</p>
+<label for="from">From</label><select id="from"></select>
+<button class="swap" id="swap" type="button">⇅ Swap</button>
+<label for="to">To</label><select id="to"></select>
+<button class="go" id="find" type="button">Find my bus</button>
+<div id="busOut" aria-live="polite"></div>
+<div class="warn">Route numbers and main stops come from public Mo Bus / Ama Bus route listings. Routes, stops and timings change, so check the Ama Bus app or the board at the stop before you board.</div>
+</section>
+
+<section id="food">
+<h2>Student food map</h2>
+<p class="sub">Tap an area to see typical student meals and prices.</p>
+<div id="map" aria-label="Map of Bhubaneswar areas"></div>
+<div class="note" id="mapnote">Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors.</div>
+<div class="chips" id="chips"></div>
+<div id="foodOut"></div>
+<details><summary>＋ Add a spot you know</summary>
+<label for="sn">Name</label><input id="sn" type="text" maxlength="60" placeholder="e.g. Dahibara stall near gate 3">
+<label for="sp">Typical price (₹)</label><input id="sp" type="number" min="0" max="2000" placeholder="40">
+<label for="st">Tip</label><input id="st" type="text" maxlength="100" placeholder="Best before 10 am">
+<button class="go" id="sadd" type="button">Save to this area</button>
+<p class="note">Saved on this device only.</p></details>
+</section>
+
+<section id="pg">
+<h2>PG cost calculator</h2>
+<p class="sub">Estimate one month in Bhubaneswar.</p>
+<label for="pgArea">Area</label><select id="pgArea"></select>
+<label for="pgShare">Room type</label>
+<select id="pgShare"><option value="1">Single room</option><option value="0.8" selected>Double sharing</option><option value="0.65">Triple sharing</option></select>
+<label for="pgFood">Food plan</label>
+<select id="pgFood"><option value="mess">Mess (lunch + dinner)</option><option value="tiffin" selected>Tiffin service (two meals a day)</option><option value="cook">Shared cook (₹800–1,000 plus groceries)</option></select>
+<label for="bus">Bus rides per day: <b id="busV">2</b></label><input id="bus" type="range" min="0" max="8" value="2">
+<label for="fare">Average fare per ride: <b id="fareV">₹15</b></label><input id="fare" type="range" min="5" max="40" value="15">
+<label for="ex">Extras (chai, data, laundry): <b id="exV">₹1500</b></label><input id="ex" type="range" min="500" max="4000" step="100" value="1500">
+<div class="total" aria-live="polite"><div>Estimated per month</div><div class="big" id="sum"></div><div class="bar" id="bar"></div><div class="legend" id="legend"></div></div>
+<p class="note">Based on student-reported ranges: PGs about ₹5,000–8,000 and tiffin about ₹3,000–4,500 a month for two meals a day (Careers360). Mess ranges follow reported campus-area mess fees of ₹2,000–3,000. Area tiers are rough guides. Visit before you pay a deposit, and ask about electricity and water charges.</p>
+</section>
+
+<section id="gems">
+<h2>Hidden gems</h2>
+<p class="sub">Free or nearly free places worth a trip.</p>
+<div id="gemOut"></div>
+</section>
+</main>
+<footer>Built by Debansh for Hack Club Coral with HTML, CSS, JS and OpenStreetMap.</footer>
+<nav role="tablist">
+<button role="tab" aria-selected="true" data-t="bus"><span>🚌</span>Bus</button>
+<button role="tab" aria-selected="false" data-t="food"><span>🍛</span>Food</button>
+<button role="tab" aria-selected="false" data-t="pg"><span>🏠</span>PG cost</button>
+<button role="tab" aria-selected="false" data-t="gems"><span>📍</span>Gems</button>
+</nav>
+<script>
+var $=function(i){return document.getElementById(i)};
+/* name, lat, lng, PG tier(1 premium,2 mid,3 budget) */
+var A={KIIT:["KIIT Square",20.3548,85.8165,2],INF:["Infocity",20.3495,85.8213,1],PAT:["Patia",20.3510,85.8195,1],NAN:["Nandankanan / Trisulia",20.3960,85.8230,3],JAY:["Jaydev Vihar",20.3000,85.8170,1],VAN:["Vani Vihar",20.2960,85.8340,1],AIR:["Airport",20.2444,85.8178,2],MC:["Master Canteen",20.2710,85.8395,2],RLY:["Railway Station",20.2685,85.8435,2],AG:["AG Square",20.2640,85.8330,2],RAS:["Rasulgarh",20.2970,85.8600,2],BAR:["Baramunda / BSABT",20.2850,85.7920,2],LIN:["Lingaraj / Old Town",20.2382,85.8338,3],KHA:["Khandagiri",20.2620,85.7800,3],DHA:["Dhauli",20.1925,85.8392,3],KISS:["KISS campus",20.3600,85.8060,2],KHO:["Khordha Bus Stand",20.1740,85.6190,3],IIT:["IIT Bhubaneswar",20.1470,85.6700,3],PUR:["Puri Bus Stand",19.8120,85.8260,3],CUT:["Cuttack (Barabati)",20.4700,85.8700,3]};
+var L_={"10":["Airport ⇄ Cuttack (via Jaydev Vihar)",["AIR","JAY","CUT"]],"12":["Railway Station ⇄ Trisulia (via Jaydev Vihar)",["RLY","JAY","NAN"]],"13E":["Nandankanan ⇄ Dhauli (via AG Square)",["NAN","AG","DHA"]],"15":["KIIT Square ⇄ Infocity",["KIIT","INF"]],"17 / 82":["Airport ⇄ Cuttack (via NH)",["AIR","CUT"]],"20 / 65":["Railway Station ⇄ Khordha (via Vani Vihar)",["RLY","VAN","KHO"]],"21":["Railway Station ⇄ Khordha (via OUAT)",["RLY","KHO"]],"38":["Railway Station ⇄ IIT Bhubaneswar",["RLY","IIT"]],"44":["Baramunda BSABT ⇄ Rasulgarh (via Vani Vihar, Master Canteen)",["BAR","VAN","MC","RAS"]],"50":["Railway Station ⇄ Puri",["RLY","PUR"]],"66":["Airport ⇄ KISS (via Master Canteen, Vani Vihar)",["AIR","MC","VAN","KISS"]]};
+var all=Object.keys(A),inL={};Object.keys(L_).forEach(function(r){L_[r][1].forEach(function(k){inL[k]=1})});
+var busKeys=all.filter(function(k){return inL[k]});
+function fill(el,ks,v){el.innerHTML=ks.map(function(k){return'<option value="'+k+'">'+A[k][0]+'</option>'}).join("");if(v)el.value=v}
+fill($("from"),busKeys,"RLY");fill($("to"),busKeys,"AIR");
+function seg(r,a,b){var s=L_[r][1],i=s.indexOf(a),j=s.indexOf(b);return i<j?s.slice(i,j+1):s.slice(j,i+1).reverse()}
+function list(st,hi){return'<ul class="stops">'+st.map(function(k,i){return'<li class="'+((i==0||i==st.length-1||(hi&&hi==k))?"k":"")+'">'+A[k][0]+'</li>'}).join("")+'</ul>'}
+function dirLink(a,b){return'<div class="note"><a href="https://www.openstreetmap.org/directions?engine=fossgis_osrm_car&route='+A[a][1]+'%2C'+A[a][2]+'%3B'+A[b][1]+'%2C'+A[b][2]+'" target="_blank" rel="noopener">See the road route on OpenStreetMap</a></div>'}
+$("find").onclick=function(){
+ var a=$("from").value,b=$("to").value,o=$("busOut"),h="",r,m;
+ if(a===b){o.innerHTML='<p class="note">You’re already there. Choose a different destination.</p>';return}
+ var d=Object.keys(L_).filter(function(r){var s=L_[r][1];return s.indexOf(a)>-1&&s.indexOf(b)>-1});
+ if(d.length){d.forEach(function(r){var st=seg(r,a,b);h+='<div class="ticket"><div class="row"><span class="no">'+r+'</span><span>Direct, no change</span></div><div class="stubline"></div><div class="note" style="margin:0 0 6px">'+L_[r][0]+'</div>'+list(st)+'</div>'});o.innerHTML=h+dirLink(a,b);return}
+ for(r in L_){if(L_[r][1].indexOf(a)<0)continue;for(m in L_){if(m===r||L_[m][1].indexOf(b)<0)continue;
+  var sh=L_[r][1].filter(function(k){return L_[m][1].indexOf(k)>-1});
+  if(sh.length){var t=sh[0];h+='<div class="ticket"><div class="row"><span class="no">'+r+' → '+m+'</span><span>Change at '+A[t][0]+'</span></div><div class="stubline"></div>'+list(seg(r,a,t).concat(seg(m,t,b).slice(1)),t)+'</div>'}}}
+ o.innerHTML=h?h+dirLink(a,b):'<p class="note">No route found in the verified list for this pair. Try the Ama Bus app for the latest routes, or share an auto or cab.</p>'+dirLink(a,b)};
+$("swap").onclick=function(){var t=$("from").value;$("from").value=$("to").value;$("to").value=t};
+
+/* Food */
+var TYP={1:[["Mess or tiffin meal","₹80–120","Premium-area messes and cafés cost more. Ask for weekly or monthly plans."],["Street snacks (gupchup, bara, chai)","₹15–40","Best value in the evening."]],
+2:[["Mess or tiffin meal","₹60–90","Look for messes near colleges. Monthly plans cut the cost."],["Odia breakfast: dahibara-aloodum, idli, puri-sabzi","₹25–50","Early-morning stalls near campuses and bus stops."],["Street snacks and chai","₹10–30","Quick and cheap between classes."]],
+3:[["Simple local meal (rice, dal, sabzi)","₹50–70","Smaller messes and bhojanalayas are usually cheapest."],["Street snacks and chai","₹10–25","Walk the back lanes to find stalls locals use."]]};
+var cur="KIIT",mine={};try{mine=JSON.parse(localStorage.getItem("bb_spots")||"{}")}catch(e){}
+function save(){try{localStorage.setItem("bb_spots",JSON.stringify(mine))}catch(e){}}
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function renderFood(){
+ var h=TYP[A[cur][3]].map(function(s){return'<div class="spot"><b>'+s[0]+'</b><span class="price">'+s[1]+'</span><small>'+s[2]+'</small></div>'}).join("");
+ (mine[cur]||[]).forEach(function(s,i){h+='<div class="spot mine"><b>'+esc(s.n)+'</b><span class="price">₹'+esc(s.p||"?")+'</span><small>'+esc(s.t||"Added by you")+'</small><button data-d="'+i+'">Remove</button></div>'});
+ $("foodOut").innerHTML='<h3 style="margin:6px 0">'+A[cur][0]+'</h3>'+h+'<a class="lnk" href="https://www.openstreetmap.org/?mlat='+A[cur][1]+'&mlon='+A[cur][2]+'#map=16/'+A[cur][1]+'/'+A[cur][2]+'" target="_blank" rel="noopener">Open this area on OpenStreetMap</a><p class="note">Typical student prices for the area, not a specific shop’s menu. Prices change.</p>';
+ $("chips").innerHTML=all.map(function(k){return'<button class="chip" data-k="'+k+'" aria-pressed="'+(k===cur)+'">'+A[k][0]+'</button>'}).join("");
+ if(MAP){MAP.flyTo([A[cur][1],A[cur][2]],13,{duration:.6});M[cur]&&0}}
+var MAP=null,M={};
+function initMap(){
+ if(MAP||!window.L)return;
+ MAP=L.map("map",{zoomControl:false,attributionControl:false,tap:false}).setView([20.29,85.82],11);
+ var t=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19}),bad=0;
+ t.on("tileerror",function(){if(!bad){bad=1;$("mapnote").innerHTML='Street tiles can’t load in this preview. Host the page on your own site and the full OpenStreetMap basemap appears. Pins still work.'}});t.addTo(MAP);
+ all.forEach(function(k){var ic=L.divIcon({className:"lbl",html:'<span style="position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:#ffb400;border:2px solid #0f2a3d"></span><b>'+A[k][0]+'</b>',iconSize:[0,0]});
+  M[k]=L.marker([A[k][1],A[k][2]],{icon:ic}).on("click",function(){cur=k;renderFood()}).addTo(MAP)});
+ MAP.fitBounds(all.filter(function(k){return k!=="PUR"&&k!=="KHO"&&k!=="IIT"}).map(function(k){return[A[k][1],A[k][2]]}))}
+$("chips").onclick=function(e){var t=e.target.closest("[data-k]");if(t){cur=t.dataset.k;renderFood()}};
+$("foodOut").onclick=function(e){var d=e.target.dataset.d;if(d!==undefined){mine[cur].splice(+d,1);save();renderFood()}};
+$("sadd").onclick=function(){var n=$("sn").value.trim();if(!n){$("sn").focus();return}
+ (mine[cur]=mine[cur]||[]).push({n:n,p:$("sp").value,t:$("st").value.trim()});save();$("sn").value=$("sp").value=$("st").value="";renderFood()};
+renderFood();
+
+/* PG: low-high per month. Single-room PG range ₹5,000-8,000 by area tier */
+fill($("pgArea"),all.filter(function(k){return A[k][3]&&["PUR","KHO","IIT","CUT"].indexOf(k)<0}),"KIIT");
+var RENT={1:[6500,8000],2:[5500,7000],3:[5000,6000]},FOOD={mess:[2000,3000],tiffin:[3000,4500],cook:[1800,3000]};
+function money(n){return"₹"+(Math.round(n/50)*50).toLocaleString("en-IN")}
+function calc(){
+ var t=A[$("pgArea").value][3],s=+$("pgShare").value,f=FOOD[$("pgFood").value],r=RENT[t];
+ var bus=$("bus").value*$("fare").value*26,ex=+$("ex").value;
+ $("busV").textContent=$("bus").value;$("fareV").textContent="₹"+$("fare").value;$("exV").textContent="₹"+ex;
+ var lo=[r[0]*s,f[0],bus,ex],hi=[r[1]*s,f[1],bus,ex],nm=["Rent","Food","Bus","Extras"],col=["var(--chilli)","var(--teal)","var(--mango)","#8fa8ba"];
+ var tl=lo.reduce(function(a,b){return a+b}),th=hi.reduce(function(a,b){return a+b});
+ $("sum").textContent=money(tl)+" – "+money(th);
+ $("bar").innerHTML=lo.map(function(v,i){return'<div style="width:'+((v+hi[i])/(tl+th)*100)+'%;background:'+col[i]+'"></div>'}).join("");
+ $("legend").innerHTML=lo.map(function(v,i){return'<span><i style="background:'+col[i]+'"></i>'+nm[i]+' '+(v===hi[i]?money(v):money(v)+"–"+money(hi[i]))+'</span>'}).join("")}
+["pgArea","pgShare","pgFood","bus","fare","ex"].forEach(function(i){$(i).addEventListener("input",calc)});calc();
+
+/* Gems */
+var G=[["Dhauli Shanti Stupa","Sunset","A white peace pagoda on a hill by the Daya river, with Ashokan rock edicts nearby. Go near golden hour. Bus 13E runs here from Nandankanan.","Dhauli Shanti Stupa"],
+["Udayagiri and Khandagiri caves","Weekend walk","Rock-cut caves on twin hills with views over the city. Wear shoes with grip.","Khandagiri Caves Bhubaneswar"],
+["Bindusagar lake","Evening","A calm loop around the old lake near the Lingaraj temple area.","Bindusagar Bhubaneswar"],
+["Ekamra Walk","Free stroll","A landscaped walkway in the Old Town, good for a study break.","Ekamra Walk Bhubaneswar"],
+["Nandankanan zoological park","Day out","Zoo, botanical garden and a lake on the north edge of the city. Ticketed, so check prices before you go.","Nandankanan Zoological Park"],
+["Your chai spot","Community","Every campus has a secret tea stall. Ask seniors, then add it on the Food tab.",""]];
+$("gemOut").innerHTML=G.map(function(g){return'<div class="gem"><span class="tag">'+g[1]+'</span><h3>'+g[0]+'</h3><p style="margin:4px 0 6px">'+g[2]+'</p>'+(g[3]?'<a class="lnk" href="https://www.openstreetmap.org/search?query='+encodeURIComponent(g[3])+'" target="_blank" rel="noopener">Find on OpenStreetMap</a>':'')+'</div>'}).join("");
+
+/* Tabs */
+document.querySelectorAll("nav button").forEach(function(b){b.onclick=function(){
+ document.querySelectorAll("nav button").forEach(function(x){x.setAttribute("aria-selected",x===b)});
+ document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===b.dataset.t)});
+ window.scrollTo(0,0);if(b.dataset.t==="food"){initMap();setTimeout(function(){if(MAP)MAP.invalidateSize()},50)}}});
+</script>
+</body>
+</html>
